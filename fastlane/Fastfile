@@ -68,10 +68,6 @@ platform :ios do
         end
     end
 
-
-
-
-
     def build_number()
         return Time.now.utc.strftime("%Y%m%d%H%M%S")
     end
