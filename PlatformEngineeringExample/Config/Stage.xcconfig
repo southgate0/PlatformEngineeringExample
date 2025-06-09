@@ -1,0 +1,6 @@
+DEVELOPMENT_TEAM = K6J498YT8Q
+PROVISIONING_PROFILE_SPECIFIER[config=Debug (Stage)][sdk=iphoneos*] = Example Development Stage
+PROVISIONING_PROFILE_SPECIFIER[config=Release (Stage)][sdk=iphoneos*] = Example Development Stage
+PRODUCT_BUNDLE_IDENTIFIER = dev.southgate.Example.Stage
+SWIFT_ACTIVE_COMPILATION_CONDITIONS[config=Debug] = DEBUG $(inherited) STAGE
+SWIFT_ACTIVE_COMPILATION_CONDITIONS[config=Release] = STAGE

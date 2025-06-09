@@ -1,0 +1,6 @@
+DEVELOPMENT_TEAM = K6J498YT8Q
+PROVISIONING_PROFILE_SPECIFIER[config=Debug (Prod)][sdk=iphoneos*] = Example Development Prod
+PROVISIONING_PROFILE_SPECIFIER[config=Release (Prod)][sdk=iphoneos*] = Example Development Prod
+PRODUCT_BUNDLE_IDENTIFIER = dev.southgate.Example
+SWIFT_ACTIVE_COMPILATION_CONDITIONS[config=Debug] = DEBUG $(inherited) PROD
+SWIFT_ACTIVE_COMPILATION_CONDITIONS[config=Release] = PROD

@@ -1,0 +1,59 @@
+default_platform(:ios)
+PROJECT_NAME = "PlatformEngineeringExample"
+API_KEY_PATH = ENV['API_KEY_PATH'] || File.expand_path("~/.fastlane/api-key.json")
+
+platform :ios do
+
+    lane :build_number do
+        build_number = Time.now.utc.strftime("%Y%m%d%H%M%S")
+    end
+
+    lane :build do
+        build_number = build_number()
+        puts "Build number: #{build_number}"
+        increment_build_number(build_number: build_number)
+        build_env(env: "Stage")
+        build_env(env: "Prod")
+    end
+
+    lane :build_env do |options|
+        env = options[:env]
+        provisioning_profiles = provisioning_profiles(env: env)
+        puts "Building #{env}"
+        build_app(
+            scheme: "#{PROJECT_NAME} (#{env})",
+            output_directory: "products",
+            output_name: "#{PROJECT_NAME}-#{env}",
+            use_system_scm: true,
+            export_method: "app-store",
+            export_options: {
+                provisioningProfiles: provisioning_profiles
+            }
+        )
+    end
+
+    desc "Clean"
+    lane :clean do
+        clean_build_artifacts
+    end
+
+    lane :provisioning_profiles do |options|
+        env = options[:env]
+        base_bundle_id = base_bundle_id(env: env)
+        provisioning_profiles = {
+            "#{base_bundle_id}" => "Example Distribution #{env}",
+        }
+    end
+
+    lane :base_bundle_id do |options|
+        env = options[:env]
+        base_bundle_id = case env
+            when "Stage"
+                "dev.southgate.Example.Stage"
+            when "Prod"
+                "dev.southgate.Example"
+            else
+                UI.user_error!("Invalid environment: #{env}")
+        end
+    end
+end
