@@ -13,5 +13,10 @@ pipeline {
                 sh "bundle install"
             }
         }
+        stage("Slow Down") {
+            steps {
+                sh "sleep 30"
+            }
+        }
     }
 }
