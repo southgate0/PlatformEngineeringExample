@@ -5,12 +5,13 @@
 //  Created by Southgate on 09/06/2025.
 //
 
-import Testing
+import XCTest
 
-struct PlatformEngineeringExampleTests {
+class PlatformEngineeringExampleTests: XCTestCase {
 
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+    func testExample() throws {
+        // Write your test here and use XCTAssert APIs to check expected conditions.
+        XCTAssertTrue(true, "Example condition should be true")
     }
 
 }

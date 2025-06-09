@@ -3,15 +3,30 @@ PROJECT_NAME = "PlatformEngineeringExample"
 API_KEY_PATH = ENV['API_KEY_PATH'] || File.expand_path("~/.fastlane/api-key.json")
 
 platform :ios do
+    desc "Clean"
+    lane :clean do
+        clean_build_artifacts
+        sh("rm -rf ../DerivedData")
+        sh("rm -rf ../products")
+    end
 
-    lane :build_number do
-        build_number = Time.now.utc.strftime("%Y%m%d%H%M%S")
+    desc "Run unit tests"
+    lane :test do
+        $test_device = create_simulator()
+        scan(
+            scheme: "#{PROJECT_NAME} (Prod)",
+            output_directory: "./products/test_results",
+            output_types: "junit,html",
+            destination:["platform=iOS Simulator,id=#{$test_device}"],
+            derived_data_path: "DerivedData",
+        )
+        destroy_simulator($test_device)
     end
 
     lane :build do
-        build_number = build_number()
-        puts "Build number: #{build_number}"
-        increment_build_number(build_number: build_number)
+        $build_number = build_number()
+        puts "Build number: #{$build_number}"
+        increment_build_number(build_number: $build_number)
         build_env(env: "Stage")
         build_env(env: "Prod")
     end
@@ -26,15 +41,11 @@ platform :ios do
             output_name: "#{PROJECT_NAME}-#{env}",
             use_system_scm: true,
             export_method: "app-store",
+            derived_data_path: "DerivedData",
             export_options: {
                 provisioningProfiles: provisioning_profiles
             }
         )
-    end
-
-    desc "Clean"
-    lane :clean do
-        clean_build_artifacts
     end
 
     lane :provisioning_profiles do |options|
@@ -55,5 +66,23 @@ platform :ios do
             else
                 UI.user_error!("Invalid environment: #{env}")
         end
+    end
+
+
+
+
+
+    def build_number()
+        return Time.now.utc.strftime("%Y%m%d%H%M%S")
+    end
+
+    def create_simulator()
+        device = 'com.apple.CoreSimulator.SimDeviceType.iPhone-16'
+        runtime = 'com.apple.CoreSimulator.SimRuntime.iOS-18-3'
+        return sh("xcrun simctl create Fastlane #{device} #{runtime}").chomp()
+    end
+
+    def destroy_simulator(test_device)
+        sh("xcrun simctl delete #{test_device}")
     end
 end
